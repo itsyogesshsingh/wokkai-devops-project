@@ -7,7 +7,10 @@ pipeline {
 
     tools {
         nodejs 'node26'
-        sonarQube 'sonar-scanner'
+    }
+
+    environment {
+        SCANNER_HOME = tool 'sonar-scanner'
     }
 
     stages {
@@ -34,10 +37,13 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonar-server') {
                     sh '''
-                        sonar-scanner \
-                        -Dsonar.projectKey=wokkai-devops-project \
-                        -Dsonar.projectName=wokkai-devops-project \
-                        -Dsonar.sources=.
+                        echo "SonarQube URL: $SONAR_HOST_URL"
+                        echo "Scanner: $SCANNER_HOME"
+
+                        $SCANNER_HOME/bin/sonar-scanner \
+                            -Dsonar.projectKey=wokkai-devops-project \
+                            -Dsonar.projectName=wokkai-devops-project \
+                            -Dsonar.sources=.
                     '''
                 }
             }
@@ -55,6 +61,20 @@ pipeline {
             steps {
                 archiveArtifacts artifacts: 'dist/**', fingerprint: true
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution completed.'
+        }
+
+        success {
+            echo 'Build, SonarQube Analysis and Quality Gate passed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check the console output.'
         }
     }
 }
