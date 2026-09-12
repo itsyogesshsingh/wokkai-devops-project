@@ -87,13 +87,13 @@ resource "aws_security_group" "ec2" {
   }
 
   # SonarQube
-  # ingress {
-  #   description = "SonarQube"
-  #   from_port   = 9000
-  #   to_port     = 9000
-  #   protocol    = "tcp"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  # }
+  ingress {
+    description = "SonarQube"
+    from_port   = 9000
+    to_port     = 9000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   # React Application
   ingress {
