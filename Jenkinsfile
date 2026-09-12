@@ -29,13 +29,23 @@ pipeline {
             }
         }
 
-        stage('SonarQube Test') {
+        stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonar-server') {
                     sh '''
-                        echo "SonarQube URL: $SONAR_HOST_URL"
-                        curl -s "$SONAR_HOST_URL/api/system/status"
+                        sonar-scanner \
+                        -Dsonar.projectKey=wokkai-devops-project \
+                        -Dsonar.projectName=wokkai-devops-project \
+                        -Dsonar.sources=.
                     '''
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
