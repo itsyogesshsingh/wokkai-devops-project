@@ -7,6 +7,7 @@ pipeline {
 
     tools {
         nodejs 'node26'
+        sonarQube 'sonar-scanner'
     }
 
     stages {
