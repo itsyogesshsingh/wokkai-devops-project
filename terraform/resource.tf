@@ -77,23 +77,23 @@ resource "aws_security_group" "ec2" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-    #   # Jenkins
-    #   ingress {
-    #     description = "Jenkins"
-    #     from_port   = 8080
-    #     to_port     = 8080
-    #     protocol    = "tcp"
-    #     cidr_blocks = ["0.0.0.0/0"]
-    #   }
+  # Jenkins
+  ingress {
+    description = "Jenkins"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-    #   # SonarQube
-    #   ingress {
-    #     description = "SonarQube"
-    #     from_port   = 9000
-    #     to_port     = 9000
-    #     protocol    = "tcp"
-    #     cidr_blocks = ["0.0.0.0/0"]
-    #   }
+  # SonarQube
+  # ingress {
+  #   description = "SonarQube"
+  #   from_port   = 9000
+  #   to_port     = 9000
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   # React Application
   ingress {
