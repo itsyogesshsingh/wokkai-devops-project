@@ -29,6 +29,17 @@ pipeline {
             }
         }
 
+        stage('SonarQube Test') {
+            steps {
+                withSonarQubeEnv('sonar-server') {
+                    sh '''
+                        echo "SonarQube URL: $SONAR_HOST_URL"
+                        curl -s "$SONAR_HOST_URL/api/system/status"
+                    '''
+                }
+            }
+        }
+
         stage('Archive Build Artifacts') {
             steps {
                 archiveArtifacts artifacts: 'dist/**', fingerprint: true
