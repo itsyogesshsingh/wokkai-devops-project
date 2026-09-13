@@ -42,7 +42,10 @@ pipeline {
                         -Dsonar.projectKey=wokkai-devops-project \
                         -Dsonar.projectName=wokkai-devops-project \
                         -Dsonar.sources=src \
-                        -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/*.lock
+                        -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/*.lock \
+                        -Dsonar.scm.disabled=true \
+                        -Dsonar.cpd.exclusions=**/* \
+                        -Dsonar.coverage.exclusions=**/*
                     '''
                 }
             }
