@@ -44,10 +44,13 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonar-server') {
                     sh '''
-                        sonar-scanner \
-                        -Dsonar.projectKey=wokkai-devops-project \
-                        -Dsonar.projectName=wokkai-devops-project \
-                        -Dsonar.sources=.
+                        echo "SonarQube URL: $SONAR_HOST_URL"
+                        echo "Scanner: $SCANNER_HOME"
+
+                        $SCANNER_HOME/bin/sonar-scanner \
+                            -Dsonar.projectKey=wokkai-devops-project \
+                            -Dsonar.projectName=wokkai-devops-project \
+                            -Dsonar.sources=.
                     '''
                 }
             }
