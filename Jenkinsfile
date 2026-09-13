@@ -41,7 +41,8 @@ pipeline {
                         $SCANNER_HOME/bin/sonar-scanner \
                         -Dsonar.projectKey=wokkai-devops-project \
                         -Dsonar.projectName=wokkai-devops-project \
-                        -Dsonar.sources=.
+                        -Dsonar.sources=src \
+                        -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/*.lock
                     '''
                 }
             }
