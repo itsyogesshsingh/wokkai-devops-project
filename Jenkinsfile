@@ -7,12 +7,11 @@ pipeline {
 
     tools {
         nodejs 'node26'
-        // sonarQube 'sonar-scanner'
     }
 
     environment {
-        // DOCKER_IMAGE = 'YOUR_DOCKERHUB_USERNAME/wokkai-devops-project'
         DOCKER_IMAGE = 'itsyogessh/wokkai-devops-project'
+        SCANNER_HOME = tool 'sonar-scanner'
     }
 
     stages {
@@ -35,22 +34,14 @@ pipeline {
             }
         }
 
-        /*
-        ============================================================
-        SONARQUBE - TEMPORARILY DISABLED
-        ============================================================
-
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonar-server') {
                     sh '''
-                        echo "SonarQube URL: $SONAR_HOST_URL"
-                        echo "Scanner: $SCANNER_HOME"
-
                         $SCANNER_HOME/bin/sonar-scanner \
-                            -Dsonar.projectKey=wokkai-devops-project \
-                            -Dsonar.projectName=wokkai-devops-project \
-                            -Dsonar.sources=.
+                        -Dsonar.projectKey=wokkai-devops-project \
+                        -Dsonar.projectName=wokkai-devops-project \
+                        -Dsonar.sources=.
                     '''
                 }
             }
@@ -63,9 +54,6 @@ pipeline {
                 }
             }
         }
-
-        ============================================================
-        */
 
         stage('Trivy Filesystem Scan') {
             steps {
@@ -163,7 +151,7 @@ pipeline {
             echo '========================================='
             echo '❌ PIPELINE FAILED'
             echo '========================================='
-            echo 'Check the failed stage and console output.'
+            echo 'Check the failed stage.'
         }
     }
 }
