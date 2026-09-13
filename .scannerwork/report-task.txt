@@ -1,0 +1,6 @@
+projectKey=wokkai-devops-project
+serverUrl=http://13.206.84.243:9000
+serverVersion=26.9.0.129388
+dashboardUrl=http://13.206.84.243:9000/dashboard?id=wokkai-devops-project
+ceTaskId=7fd34adb-02bc-48d0-b28b-14fff6772812
+ceTaskUrl=http://13.206.84.243:9000/api/ce/task?id=7fd34adb-02bc-48d0-b28b-14fff6772812
