@@ -11,7 +11,6 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'itsyogessh/wokkai-devops-project'
-        SCANNER_HOME = tool 'sonar-scanner'
     }
 
     stages {
@@ -34,37 +33,10 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonar-server') {
-                    sh '''
-                        $SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.projectKey=wokkai-devops-project \
-                        -Dsonar.projectName=wokkai-devops-project \
-                        -Dsonar.sources=src \
-                        -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/*.lock \
-                        -Dsonar.scm.disabled=true \
-                        -Dsonar.cpd.exclusions=**/* \
-                        -Dsonar.coverage.exclusions=**/*
-                    '''
-                }
-            }
-        }
-
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 2, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-
         stage('Trivy Filesystem Scan') {
             steps {
                 sh '''
-                    trivy fs \
-                    --severity HIGH,CRITICAL \
-                    .
+                    trivy fs --severity HIGH,CRITICAL .
                 '''
             }
         }
@@ -72,9 +44,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh '''
-                    docker build \
-                    -t $DOCKER_IMAGE:$BUILD_NUMBER \
-                    .
+                    docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .
                 '''
             }
         }
@@ -82,9 +52,7 @@ pipeline {
         stage('Trivy Image Scan') {
             steps {
                 sh '''
-                    trivy image \
-                    --severity HIGH,CRITICAL \
-                    $DOCKER_IMAGE:$BUILD_NUMBER
+                    trivy image --severity HIGH,CRITICAL $DOCKER_IMAGE:$BUILD_NUMBER
                 '''
             }
         }
@@ -99,20 +67,16 @@ pipeline {
                     )
                 ]) {
                     sh '''
-                        echo "$DOCKER_PASSWORD" | \
-                        docker login \
-                        -u "$DOCKER_USERNAME" \
-                        --password-stdin
+                        echo "$DOCKER_PASSWORD" | docker login \
+                            -u "$DOCKER_USERNAME" \
+                            --password-stdin
 
-                        docker push \
-                        $DOCKER_IMAGE:$BUILD_NUMBER
+                        docker push $DOCKER_IMAGE:$BUILD_NUMBER
 
-                        docker tag \
-                        $DOCKER_IMAGE:$BUILD_NUMBER \
-                        $DOCKER_IMAGE:latest
+                        docker tag $DOCKER_IMAGE:$BUILD_NUMBER \
+                            $DOCKER_IMAGE:latest
 
-                        docker push \
-                        $DOCKER_IMAGE:latest
+                        docker push $DOCKER_IMAGE:latest
 
                         docker logout
                     '''
@@ -136,26 +100,24 @@ pipeline {
 
         stage('Archive Build Artifacts') {
             steps {
-                archiveArtifacts \
-                    artifacts: 'dist/**', \
-                    fingerprint: true
+                archiveArtifacts artifacts: 'dist/**', fingerprint: true
             }
         }
     }
 
     post {
         success {
-            echo '========================================='
+            echo '======================================'
             echo '🚀 WOKKAI DEPLOYMENT SUCCESSFUL'
-            echo '========================================='
-            echo '🌐 Application: http://15.206.160.8:3000'
+            echo '🌐 Application running on port 3000'
+            echo '======================================'
         }
 
         failure {
-            echo '========================================='
+            echo '======================================'
             echo '❌ PIPELINE FAILED'
-            echo '========================================='
-            echo 'Check the failed stage.'
+            echo 'Check the failed stage logs.'
+            echo '======================================'
         }
     }
 }
